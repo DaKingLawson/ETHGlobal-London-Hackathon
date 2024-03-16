@@ -176,7 +176,6 @@ export default function Home() {
     },
   });
   const myImage = cld.image("hackathon/cnz5nwtobk1xfebzd3ko");
-  myImage.resize(Resize.scale().width(100));
 
   const loggedOutView = (
     <div className="flex flex-row h-screen bg-eggshell">

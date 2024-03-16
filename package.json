@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@openzeppelin/contracts": "^5.0.2",
     "@cloudinary/react": "^1.13.0",
     "@cloudinary/url-gen": "^1.19.0",
     "@testing-library/jest-dom": "^5.17.0",
@@ -40,8 +39,6 @@
   },
   "devDependencies": {
     "tailwindcss": "^3.4.1",
-    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
-    "dotenv": "^16.4.5",
-    "hardhat": "^2.22.1"
+    "dotenv": "^16.4.5"
   }
 }

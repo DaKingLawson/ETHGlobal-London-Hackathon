@@ -10,6 +10,10 @@ const App = () => {
       cloudName: "dosguo3sg",
     },
   });
+
+  const description =
+    "Imagine a world where communities come together effortlessly to support their own.";
+
   const myImage = cld.image("hackathon/cnz5nwtobk1xfebzd3ko");
   myImage.resize(Resize.scale().width(100));
   return (
@@ -22,7 +26,7 @@ const App = () => {
         />
       </div>
 
-      <LoginCard heading="Hey, Neighbor!" />
+      <LoginCard heading="Hey, Neighbor!" description={description} />
     </div>
   );
 };

@@ -1,4 +1,12 @@
 import LoginButton from "./LoginButton";
+import { IBM_Plex_Serif } from "next/font/google";
+
+const ibm_plex = IBM_Plex_Serif({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["100", "200", "300", "400", "500", "600"],
+  variable: "--font-ibm-plex-serif",
+});
 
 export default function LoginCard({ heading, description, handleClick }) {
   return (
@@ -21,7 +29,10 @@ export default function LoginCard({ heading, description, handleClick }) {
                   provider="Google"
                   handleClick={handleClick}
                 ></LoginButton>
-                <LoginButton provider="Apple"></LoginButton>
+                <LoginButton
+                  provider="Apple"
+                  handleClick={handleClick}
+                ></LoginButton>
                 <LoginButton provider="Coinbase"></LoginButton>
               </div>
             </div>

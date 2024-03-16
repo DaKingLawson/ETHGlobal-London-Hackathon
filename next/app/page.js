@@ -13,6 +13,7 @@ export default function Home() {
     "Imagine a world where communities come together effortlessly to support their own.";
 
   const handleClick = () => {
+    console.log("hi");
     setLoggedIn(!loggedIn);
   };
 

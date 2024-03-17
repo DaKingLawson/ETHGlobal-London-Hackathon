@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import "dotenv/config";
 import { React, useState, useEffect } from "react";
 import { AdvancedImage } from "@cloudinary/react";
 import { Resize, scale } from "@cloudinary/url-gen/actions/resize";
@@ -16,8 +17,15 @@ import {
 import { signerToSafeSmartAccount } from "permissionless/accounts";
 import { EIP1193Provider, createPublicClient, http } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { sepolia } from "viem/chains";
+import { sepolia, baseSepolia } from "viem/chains";
 import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
+import {
+  privateKeyToSimpleSmartAccount,
+  privateKeyToSafeSmartAccount,
+} from "permissionless/accounts";
+import { writeFileSync } from "fs";
+import { privateKeyToAccount } from "viem/accounts";
+import { pimlicoBundlerClient } from "../pimlicoBundlerClient";
 
 const clientId =
   "BLZgeDsQhrFbZSYgXRVmB-5R1PzjXJBeZ8hXftrqnlgW5XRYLMxNYiMUzRp3l1dDxwa0w7iAwSII_wTrWEJs4uU"; // get from https://dashboard.web3auth.io
@@ -25,7 +33,8 @@ const clientId =
 const chainConfig = {
   chainNamespace: CHAIN_NAMESPACES.EIP155,
   chainId: "0x14A34", // hex of 84532
-  rpcTarget: "https://sepolia.base.org",
+  rpcTarget:
+    "https://base-sepolia.g.alchemy.com/v2/Uhzh7zEy_e4XwaeUrsxo1vvtTI4FsqXB",
   // Avoid using public rpcTarget in production.
   // Use services like Infura, Quicknode etc
   displayName: "Base Sepolia",
@@ -48,14 +57,26 @@ const web3auth = new Web3Auth({
 //Objective: create multiple users to feed to maci
 
 export const publicClient = createPublicClient({
-  transport: http("https://rpc.ankr.com/eth_sepolia"),
-  chain: sepolia,
+  transport: http(
+    "https://base-sepolia.g.alchemy.com/v2/Uhzh7zEy_e4XwaeUrsxo1vvtTI4FsqXB"
+  ),
+  chain: baseSepolia,
 });
 
+//generate a private key
+const privateKey =
+  process.env.PRIVATE_KEY ??
+  (() => {
+    const pk = generatePrivateKey();
+    writeFileSync(".env", `PRIVATE_KEY=${pk}`);
+    return pk;
+  })();
+
+//creates a SmartAccount from private key
 // Create the smart account signer from the provider and signer address
 
 export default function Home() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(checkUser());
   const [provider, setProvider] = useState(null);
 
   useEffect(() => {
@@ -78,19 +99,26 @@ export default function Home() {
   const login = async () => {
     const web3authProvider = await web3auth.connect();
     //Create the smart account signer from the provider and signer address {The account that will be interacting with contracts on this accounts behalf}
+    // try {
+    // } catch (e) {
+    //   console.log(e.stack);
+    // }
     const smartAccountSigner = await providerToSmartAccountSigner(
       web3authProvider
-    ).then(console.log("hi"));
+    ).then(console.log);
 
     //Add a signer to the web3 auth account that was just created
     const smartAccount = await signerToSafeSmartAccount(publicClient, {
       signer: smartAccountSigner,
       safeVersion: "1.4.1",
       entryPoint: ENTRYPOINT_ADDRESS_V06,
-    });
+    }).then(console.log);
     setProvider(web3authProvider);
     if (web3auth.connected) {
+      console.log("here");
       setLoggedIn(true);
+      const userInfo = await getUserInfo();
+      console.log(userInfo);
     } else {
       console.log("Not connected :(");
     }
@@ -202,4 +230,9 @@ export default function Home() {
   );
 
   return loggedIn ? loggedInView : loggedOutView;
+}
+
+export function checkUser() {
+  console.log(web3auth.connected);
+  return web3auth.connected;
 }

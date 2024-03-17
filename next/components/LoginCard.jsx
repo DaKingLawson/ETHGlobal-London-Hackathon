@@ -8,7 +8,12 @@ const ibm_plex = IBM_Plex_Serif({
   variable: "--font-ibm-plex-serif",
 });
 
-export default function LoginCard({ heading, description, handleClick }) {
+export default function LoginCard({
+  heading,
+  description,
+  handleClick,
+  login,
+}) {
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -28,6 +33,7 @@ export default function LoginCard({ heading, description, handleClick }) {
                 <LoginButton
                   provider="Google"
                   handleClick={handleClick}
+                  login={login}
                 ></LoginButton>
                 <LoginButton
                   provider="Apple"
